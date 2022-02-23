@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">IMU</string>
+    <string name="AccelerometerX">AccelerometerX: %1$f</string>
+    <string name="AccelerometerY">AccelerometerY: %1$f</string>
+    <string name="AccelerometerZ">AccelerometerZ: %1$f</string>
+    <string name="Magnetic_FieldX">Magnetic_FieldX: %1$f</string>
+    <string name="Magnetic_FieldY">Magnetic_FieldY: %1$f</string>
+    <string name="Magnetic_FieldZ">Magnetic_FieldZ: %1$f</string>
+    <string name="GyroscopeX">GyroscopeX: %1$f</string>
+    <string name="GyroscopeY">GyroscopeY: %1$f</string>
+    <string name="GyroscopeZ">GyroscopeZ: %1$f</string>
 </resources>

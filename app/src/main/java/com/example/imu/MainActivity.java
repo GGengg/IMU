@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
                 //第二步创建RequestBody（Form表达）
                 RequestBody body = new FormBody.Builder()
-                        .add("Timestamp", String.valueOf(System.currentTimeMillis()))
+                        .add("accx", (String) ((TextView) findViewById(R.id.time)).getText())
                         .add("accx", (String) ((TextView) findViewById(R.id.accx)).getText())
                         .add("accy", (String) ((TextView) findViewById(R.id.accy)).getText())
                         .add("accz", (String) ((TextView) findViewById(R.id.accz)).getText())
@@ -118,28 +118,32 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
-        Timestamp.setText(String.valueOf(sensorEvent.timestamp));
-        if (sensorEvent.sensor.getType() == Sensor.TYPE_ACCELEROMETER){
-            float accx = sensorEvent.values[0];
-            float accy = sensorEvent.values[1];
-            float accz = sensorEvent.values[2];
-            accxText.setText("accx:" + accx);
-            accyText.setText("accy:" + accy);
-            acczText.setText("accz:" + accz);
-        }else if (sensorEvent.sensor.getType() == Sensor.TYPE_GYROSCOPE){
-            float gyrox = sensorEvent.values[0];
-            float gyroy = sensorEvent.values[1];
-            float gyroz = sensorEvent.values[2];
-            gyroxText.setText("gyrox:" + gyrox);
-            gyroyText.setText("gyroy:" + gyroy);
-            gyrozText.setText("gyroz:" + gyroz);
-        }else{
-            float magx = sensorEvent.values[0];
-            float magy = sensorEvent.values[1];
-            float magz = sensorEvent.values[2];
-            magxText.setText("magx:" + magx);
-            magyText.setText("magy:" + magy);
-            magzText.setText("magz:" + magz);
+        long time = sensorEvent.timestamp;
+        Timestamp.setText(String.valueOf(time));
+        switch (sensorEvent.sensor.getType()){
+            case Sensor.TYPE_ACCELEROMETER:
+                String AccX = this.getString(R.string.AccelerometerX,sensorEvent.values[0]);
+                String AccY = this.getString(R.string.AccelerometerY,sensorEvent.values[1]);
+                String AccZ = this.getString(R.string.AccelerometerZ,sensorEvent.values[2]);
+                accxText.setText(AccX);
+                accyText.setText(AccY);
+                acczText.setText(AccZ);
+                break;
+            case Sensor.TYPE_MAGNETIC_FIELD:
+                String MagX = this.getString(R.string.Magnetic_FieldX,sensorEvent.values[0]);
+                String MagY = this.getString(R.string.Magnetic_FieldY,sensorEvent.values[1]);
+                String MagZ = this.getString(R.string.Magnetic_FieldZ,sensorEvent.values[2]);
+                magxText.setText(MagX);
+                magyText.setText(MagY);
+                magzText.setText(MagZ);
+                break;
+            case Sensor.TYPE_GYROSCOPE:
+                String GyroX = this.getString(R.string.GyroscopeX,sensorEvent.values[0]);
+                String GyroY = this.getString(R.string.GyroscopeY,sensorEvent.values[1]);
+                String GyroZ = this.getString(R.string.GyroscopeZ,sensorEvent.values[2]);
+                gyroxText.setText(GyroX);
+                gyroyText.setText(GyroY);
+                gyrozText.setText(GyroZ);
         }
     }
 
