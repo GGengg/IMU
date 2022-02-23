@@ -1,0 +1,114 @@
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/Theme.AppCompat">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/Theme.AppCompat" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <LinearLayout
+        android:fitsSystemWindows="true"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/bt"
+            android:layout_width="130dp"
+            android:layout_height="60dp"
+            android:text="Nothing"
+            tools:ignore="DuplicateIds" />
+
+        <TextView
+            android:id="@+id/accx"
+            android:layout_width="300dp"
+            android:layout_height="50dp"
+            android:layout_gravity=""
+            android:text="accx" />
+
+        <TextView
+            android:id="@+id/accy"
+            android:layout_width="300dp"
+            android:layout_height="50dp"
+            android:layout_gravity=""
+            android:text="accy" />
+
+        <TextView
+            android:id="@+id/accz"
+            android:layout_width="300dp"
+            android:layout_height="50dp"
+            android:layout_gravity=""
+            android:text="accz" />
+
+        <TextView
+            android:id="@+id/gyrox"
+            android:layout_width="300dp"
+            android:layout_height="50dp"
+            android:layout_gravity=""
+            android:text="gyrox" />
+
+        <TextView
+            android:id="@+id/gyroy"
+            android:layout_width="300dp"
+            android:layout_height="50dp"
+            android:layout_gravity=""
+            android:text="gyroy" />
+
+        <TextView
+            android:id="@+id/gyroz"
+            android:layout_width="300dp"
+            android:layout_height="50dp"
+            android:layout_gravity=""
+            android:text="gyroz" />
+
+        <TextView
+            android:id="@+id/magx"
+            android:layout_width="300dp"
+            android:layout_height="50dp"
+            android:layout_gravity=""
+            android:text="magx" />
+
+        <TextView
+            android:id="@+id/magy"
+            android:layout_width="300dp"
+            android:layout_height="50dp"
+            android:layout_gravity=""
+            android:text="magy" />
+
+        <TextView
+            android:id="@+id/magz"
+            android:layout_width="300dp"
+            android:layout_height="50dp"
+            android:layout_gravity=""
+            android:text="magz" />
+
+        <Button
+            android:id="@+id/bt_dsp"
+            android:layout_width="149dp"
+            android:layout_height="50dp"
+            android:onClick="onClickLogData"
+            android:text="Log data" />
+
+        <TextView
+            android:id="@+id/time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="TextView" />
+
+    </LinearLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
