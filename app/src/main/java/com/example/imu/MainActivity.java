@@ -9,6 +9,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Handler;
+import android.os.SystemClock;
 import android.view.View;
 import android.widget.TextView;
 import android.util.Log;
@@ -31,16 +32,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private SensorManager sensorManager;
     private final HashMap<String,Sensor> sensors = new HashMap<>();
 
-    private TextView accxText;
-    private TextView accyText;
-    private TextView acczText;
-    private TextView gyroxText;
-    private TextView gyroyText;
-    private TextView gyrozText;
-    private TextView magxText;
-    private TextView magyText;
-    private TextView magzText;
-    private TextView Timestamp;
+    private TextView accxText, accyText, acczText, gyroxText, gyroyText, gyrozText,
+            magxText, magyText, magzText, Timestamp;
 
     public float accx,accy,accz,gyrox,gyroy,gyroz,magx,magy,magz;
     public long time;
@@ -83,19 +76,16 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     public void onClickLogData(View view){
         Log.d(TAG,"onClickLogData");
-        //第一步创建OKHttpClient
         final OkHttpClient client = new OkHttpClient();
 
         Handler handler = new Handler();
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                if (Running){
+                if (Running) {
                     handler.postDelayed(this, 20);
-                    //接口参数 String username,String password
-                    String url = "http://192.168.86.34:5000/server";
-
-                    //第二步创建RequestBody（Form表达)
+                    String url = "http://192.168.86.43:5000/server";
+                    Log.d(TAG, String.valueOf(time));
                     RequestBody body = new FormBody.Builder()
                             .add("Timestamp", String.valueOf(time))
                             .add("accx", String.valueOf(accx))
@@ -108,15 +98,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                             .add("magy", String.valueOf(magy))
                             .add("magz", String.valueOf(magz))
                             .build();
-                    //第三步创建Rquest
+
                     Request request = new Request.Builder()
                             .url(url)
                             .post(body)
                             .build();
 
-                    //第四步创建call回调对象
                     final Call call = client.newCall(request);
-                    //第五步发起请求
                     call.enqueue(new Callback() {
                         @Override
                         public void onFailure(@NonNull Call call, @NonNull IOException e) {
@@ -124,29 +112,31 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                         }
 
                         @Override
-                        public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                        public void onResponse(@NonNull Call call, @NonNull Response response)
+                                throws IOException {
                             assert response.body() != null;
                             String result = response.body().string();
                             Log.i("result", result);
-                            //Log.d(TAG, "Status code: "+ response.code());
                         }
                     });
-                }else{
+                } else {
                     handler.removeCallbacks(this);
                 }
                 }
         };
         handler.postDelayed(runnable, 1000);
-       // handler.postDelayed(runnable, 100);
     }
 
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
-        long time = sensorEvent.timestamp;
+        time = SystemClock.elapsedRealtime();
         Timestamp.setText(String.valueOf(time));
+
+        //in milliseconds since last boot
+        //Log.d(TAG, String.valueOf(SystemClock.elapsedRealtime()));
+
         switch (sensorEvent.sensor.getType()){
             case Sensor.TYPE_ACCELEROMETER:
-                Log.d(TAG, "Acc: "+sensorEvent.timestamp);
                 accx = sensorEvent.values[0];
                 accy = sensorEvent.values[1];
                 accz = sensorEvent.values[2];
@@ -159,7 +149,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 break;
 
             case Sensor.TYPE_MAGNETIC_FIELD:
-                Log.d(TAG, "Mag: "+sensorEvent.timestamp);
                 magx = sensorEvent.values[0];
                 magy = sensorEvent.values[1];
                 magz = sensorEvent.values[2];
@@ -172,7 +161,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 break;
 
             case Sensor.TYPE_GYROSCOPE:
-                Log.d(TAG,"Gyr: "+sensorEvent.timestamp);
                 gyrox = sensorEvent.values[0];
                 gyroy = sensorEvent.values[1];
                 gyroz = sensorEvent.values[2];
@@ -201,7 +189,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     protected void onStop() {
         Log.d(TAG, "onStop() MainActivity");
         super.onStop();
-        Running = false;
         unregisterSensors();
+        Running = false;
     }
 }
