@@ -10,13 +10,6 @@
         android:layout_height="wrap_content"
         android:theme="@style/Theme.AppCompat">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:popupTheme="@style/Theme.AppCompat" />
-
     </com.google.android.material.appbar.AppBarLayout>
 
     <LinearLayout
@@ -26,18 +19,10 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <Button
-            android:id="@+id/bt"
-            android:layout_width="130dp"
-            android:layout_height="60dp"
-            android:text="Nothing"
-            tools:ignore="DuplicateIds" />
-
         <TextView
             android:id="@+id/accx"
             android:layout_width="300dp"
             android:layout_height="50dp"
-            android:layout_gravity=""
             android:text="accx" />
 
         <TextView
@@ -107,7 +92,15 @@
             android:id="@+id/time"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="TextView" />
+            android:text="To display time" />
+
+        <EditText
+            android:id="@+id/editTextNumber"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Please enter url"
+            android:inputType="number" />
 
     </LinearLayout>
 
