@@ -43,6 +43,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private final float[] LastMagReading = new float[3];
     private final float[] LastGyroReading = new float[3];
     private final float[] rotationMatrix = new float[9];
+    private final float[] inclinationMatrix = new float[9];
     private final float[] orientationAngles = new float[3];
 
     @Override
@@ -209,13 +210,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 break;
 
             case Sensor.TYPE_GYROSCOPE:
-                LastGyroReading[0] = alpha * LastGyroReading[0] + (1-alpha) * sensorEvent.values[0];
-                LastGyroReading[1] = alpha * LastGyroReading[1] + (1-alpha) * sensorEvent.values[1];
-                LastGyroReading[2] = alpha * LastGyroReading[2] + (1-alpha) * sensorEvent.values[2];
+                LastGyroReading[0] = sensorEvent.values[0];
+                LastGyroReading[1] = sensorEvent.values[1];
+                LastGyroReading[2] = sensorEvent.values[2];
         }
 
         // Rotation matrix based on current readings from accelerometer and magnetometer.
-        SensorManager.getRotationMatrix(rotationMatrix, null,
+        SensorManager.getRotationMatrix(rotationMatrix, inclinationMatrix,
                 LastAccReading, LastMagReading);
         // Express the updated rotation matrix as three orientation angles.
         SensorManager.getOrientation(rotationMatrix, orientationAngles);
@@ -225,6 +226,22 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int i) {
+        switch (i) {
+            case -1:
+                Log.d(TAG,"No Contact");
+                break;
+            case 0:
+                Log.d(TAG,"Unreliable");
+                break;
+            case 1:
+                Log.d(TAG,"Low Accuracy");
+                break;
+            case 2:
+                Log.d(TAG,"Medium Accuracy");
+                break;
+            case 3:
+                Log.d(TAG,"High Accuracy");
+        }
     }
 
     @Override
