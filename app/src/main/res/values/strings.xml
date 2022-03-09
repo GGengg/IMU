@@ -9,4 +9,7 @@
     <string name="GyroscopeX">GyroscopeX: %1$f</string>
     <string name="GyroscopeY">GyroscopeY: %1$f</string>
     <string name="GyroscopeZ">GyroscopeZ: %1$f</string>
+    <string name="Azimuth">Azimuth: %1$f</string>
+    <string name="Pitch">Pitch: %1$f</string>
+    <string name="Roll">Roll: %1$f</string>
 </resources>

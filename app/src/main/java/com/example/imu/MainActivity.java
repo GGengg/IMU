@@ -35,16 +35,15 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private final HashMap<String,Sensor> sensors = new HashMap<>();
 
     private TextView accxText, accyText, acczText, gyroxText, gyroyText, gyrozText,
-            magxText, magyText, magzText, Timestamp;
+            magxText, magyText, magzText, AzimuthText, PitchText, RollText;
 
-    public float accx,accy,accz,gyrox,gyroy,gyroz,magx,magy,magz;
+    public long time;
 
     private final float[] LastAccReading = new float[3];
     private final float[] LastMagReading = new float[3];
+    private final float[] LastGyroReading = new float[3];
     private final float[] rotationMatrix = new float[9];
     private final float[] orientationAngles = new float[3];
-
-    public long time;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +59,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         magxText = findViewById(R.id.magx);
         magyText = findViewById(R.id.magy);
         magzText = findViewById(R.id.magz);
-        Timestamp = findViewById(R.id.time);
+        AzimuthText = findViewById(R.id.Azimuth);
+        PitchText = findViewById(R.id.Pitch);
+        RollText = findViewById(R.id.Roll);
 
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         sensors.put("Accelerometer",sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER));
@@ -80,26 +81,33 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 } else {
                     Update_UI_Handler.postDelayed(this,200);
 
-                    String AccX = getString(R.string.AccelerometerX,accx);
-                    String AccY = getString(R.string.AccelerometerY,accy);
-                    String AccZ = getString(R.string.AccelerometerZ,accz);
+                    String AccX = getString(R.string.AccelerometerX,LastAccReading[0]);
+                    String AccY = getString(R.string.AccelerometerY,LastAccReading[1]);
+                    String AccZ = getString(R.string.AccelerometerZ,LastAccReading[2]);
                     accxText.setText(AccX);
                     accyText.setText(AccY);
                     acczText.setText(AccZ);
 
-                    String MagX = getString(R.string.Magnetic_FieldX,magx);
-                    String MagY = getString(R.string.Magnetic_FieldY,magy);
-                    String MagZ = getString(R.string.Magnetic_FieldZ,magz);
+                    String MagX = getString(R.string.Magnetic_FieldX,LastMagReading[0]);
+                    String MagY = getString(R.string.Magnetic_FieldY,LastMagReading[1]);
+                    String MagZ = getString(R.string.Magnetic_FieldZ,LastMagReading[2]);
                     magxText.setText(MagX);
                     magyText.setText(MagY);
                     magzText.setText(MagZ);
 
-                    String GyroX = getString(R.string.GyroscopeX,gyrox);
-                    String GyroY = getString(R.string.GyroscopeY,gyroy);
-                    String GyroZ = getString(R.string.GyroscopeZ,gyroz);
+                    String GyroX = getString(R.string.GyroscopeX,LastGyroReading[0]);
+                    String GyroY = getString(R.string.GyroscopeY,LastGyroReading[1]);
+                    String GyroZ = getString(R.string.GyroscopeZ,LastGyroReading[2]);
                     gyroxText.setText(GyroX);
                     gyroyText.setText(GyroY);
                     gyrozText.setText(GyroZ);
+
+                    String Azimuth = getString(R.string.Azimuth,orientationAngles[0]);
+                    String Pitch = getString(R.string.Pitch,orientationAngles[1]);
+                    String Roll = getString(R.string.Roll,orientationAngles[2]);
+                    AzimuthText.setText(Azimuth);
+                    PitchText.setText(Pitch);
+                    RollText.setText(Roll);
                 }
             }
         };
@@ -140,22 +148,18 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
                 RequestBody body = new FormBody.Builder()
                         .add("Timestamp", String.valueOf(time))
-                        .add("accx", String.valueOf(accx))
-                        .add("accy", String.valueOf(accy))
-                        .add("accz", String.valueOf(accz))
-                        .add("gyrox", String.valueOf(gyrox))
-                        .add("gyroy", String.valueOf(gyroy))
-                        .add("gyroz", String.valueOf(gyroz))
-                        .add("magx", String.valueOf(magx))
-                        .add("magy", String.valueOf(magy))
-                        .add("magz", String.valueOf(magz))
+                        .add("accx", String.valueOf(LastAccReading[0]))
+                        .add("accy", String.valueOf(LastAccReading[1]))
+                        .add("accz", String.valueOf(LastAccReading[2]))
+                        .add("gyrox", String.valueOf(LastGyroReading[0]))
+                        .add("gyroy", String.valueOf(LastGyroReading[1]))
+                        .add("gyroz", String.valueOf(LastGyroReading[2]))
+                        .add("magx", String.valueOf(LastMagReading[0]))
+                        .add("magy", String.valueOf(LastMagReading[1]))
+                        .add("magz", String.valueOf(LastMagReading[2]))
                         .add("orientation", orientationAngles[0] + " " +
                                 orientationAngles[1] + " " + orientationAngles[2])
                         .build();
-
-                Log.d(TAG,orientationAngles[0] +
-                        String.valueOf(orientationAngles[1]) +
-                        orientationAngles[2]);
 
                 Request request = new Request.Builder()
                         .url(url)
@@ -184,29 +188,30 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
+
+        final float alpha = 0.97f;
         //in milliseconds since last boot
         time = SystemClock.elapsedRealtime();
-        //Timestamp.setText(String.valueOf(time));
 
         switch (sensorEvent.sensor.getType()){
             case Sensor.TYPE_ACCELEROMETER:
-                System.arraycopy(sensorEvent.values,0,LastAccReading,0,sensorEvent.values.length);
-                accx = sensorEvent.values[0];
-                accy = sensorEvent.values[1];
-                accz = sensorEvent.values[2];
+                //System.arraycopy(sensorEvent.values,0,LastAccReading,0,sensorEvent.values.length);
+                LastAccReading[0] = alpha * LastAccReading[0] + (1-alpha) * sensorEvent.values[0];
+                LastAccReading[1] = alpha * LastAccReading[1] + (1-alpha) * sensorEvent.values[1];
+                LastAccReading[2] = alpha * LastAccReading[2] + (1-alpha) * sensorEvent.values[2];
                 break;
 
             case Sensor.TYPE_MAGNETIC_FIELD:
-                System.arraycopy(sensorEvent.values,0,LastMagReading,0,sensorEvent.values.length);
-                magx = sensorEvent.values[0];
-                magy = sensorEvent.values[1];
-                magz = sensorEvent.values[2];
+                //System.arraycopy(sensorEvent.values,0,LastMagReading,0,sensorEvent.values.length);
+                LastMagReading[0] = alpha * LastMagReading[0] + (1-alpha) * sensorEvent.values[0];
+                LastMagReading[1] = alpha * LastMagReading[1] + (1-alpha) * sensorEvent.values[1];
+                LastMagReading[2] = alpha * LastMagReading[2] + (1-alpha) * sensorEvent.values[2];
                 break;
 
             case Sensor.TYPE_GYROSCOPE:
-                gyrox = sensorEvent.values[0];
-                gyroy = sensorEvent.values[1];
-                gyroz = sensorEvent.values[2];
+                LastGyroReading[0] = alpha * LastGyroReading[0] + (1-alpha) * sensorEvent.values[0];
+                LastGyroReading[1] = alpha * LastGyroReading[1] + (1-alpha) * sensorEvent.values[1];
+                LastGyroReading[2] = alpha * LastGyroReading[2] + (1-alpha) * sensorEvent.values[2];
         }
 
         // Rotation matrix based on current readings from accelerometer and magnetometer.
@@ -215,7 +220,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         // Express the updated rotation matrix as three orientation angles.
         SensorManager.getOrientation(rotationMatrix, orientationAngles);
 
-        //Log.i("OrientationTestActivity",String.format("Orientation: %f, %f, %f", orientationAngles[0],orientationAngles[1],orientationAngles[2]));
+        //Log.i("OrientationTestActivity",String.format("Orientation: %f, %f, %f", orientationAngles[0], orientationAngles[1], orientationAngles[2]));
     }
 
     @Override

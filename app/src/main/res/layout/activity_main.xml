@@ -81,18 +81,30 @@
             android:layout_gravity=""
             android:text="magz" />
 
+        <TextView
+            android:id="@+id/Azimuth"
+            android:layout_width="300dp"
+            android:layout_height="50dp"
+            android:text="Azimuth" />
+
+        <TextView
+            android:id="@+id/Pitch"
+            android:layout_width="300dp"
+            android:layout_height="50dp"
+            android:text="Pitch" />
+
+        <TextView
+            android:id="@+id/Roll"
+            android:layout_width="300dp"
+            android:layout_height="50dp"
+            android:text="Roll" />
+
         <Button
             android:id="@+id/bt_dsp"
             android:layout_width="149dp"
             android:layout_height="50dp"
             android:onClick="onClickLogData"
             android:text="Log data" />
-
-        <TextView
-            android:id="@+id/time"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="To display time" />
 
         <EditText
             android:id="@+id/editTextNumber"
